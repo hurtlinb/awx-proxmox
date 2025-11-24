@@ -1,0 +1,46 @@
+---
+- name: Création d'une VM Proxmox (POC AWX)
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  collections:
+    - community.general
+
+  vars:
+    proxmox_node: "pve1"          # à adapter: nom de ton nœud Proxmox
+    proxmox_storage: "ceph-data"  # à adapter: nom du storage CEPH
+    vmid: 110                      # ID libre
+    vm_name: "awx-poc-01"
+    cores: 2
+    memory: 4096                   # en MiB
+    disk_size: 20                  # en GiB
+
+  tasks:
+    - name: Créer la VM Proxmox
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_token_id: "{{ proxmox_api_token_id }}"
+        api_token_secret: "{{ proxmox_api_token_secret }}"
+        validate_certs: false
+
+        node: "{{ proxmox_node }}"
+        vmid: "{{ vmid }}"
+        name: "{{ vm_name }}"
+        memory: "{{ memory }}"
+        cores: "{{ cores }}"
+        ostype: "l26"
+
+        scsihw: "virtio-scsi-pci"
+        disks:
+          - size: "{{ disk_size }}"
+            type: scsi
+            storage: "{{ proxmox_storage }}"
+            format: qcow2
+
+        netifs:
+          - model: virtio
+            bridge: vmbr0
+
+        state: present
