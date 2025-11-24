@@ -9,7 +9,7 @@
 
   vars:
     proxmox_node: "pve1"          # à adapter: nom de ton nœud Proxmox
-    proxmox_storage: "ceph-data"  # à adapter: nom du storage CEPH
+    proxmox_storage: "pool1"  # à adapter: nom du storage CEPH
     vmid: 110                      # ID libre
     vm_name: "awx-poc-01"
     cores: 2
